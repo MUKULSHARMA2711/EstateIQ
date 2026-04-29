@@ -11,23 +11,23 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
   head: () => ({
     meta: [
-      { title: "Real Estate Investment Analyzer — Smart Property Insights" },
-      { name: "description", content: "Analyze ROI, EMI, cash flow and forecasts for your real estate investments with a modern fintech dashboard." },
+      { title: "EstateIQ — Real Estate Investment Analysis" },
+      { name: "description", content: "Analyze ROI, EMI, cash flow and market insights for real estate investments with AI-powered analytics." },
     ],
   }),
 });
 
 const defaultValues: FormValues = {
-  city: "New York",
-  propertyType: "flat",
+  city: "Mumbai",
+  propertyType: "Flat",
   bhk: 2,
   propertyArea: 1200,
-  price: 350000,
-  rent: 2800,
-  loan: 280000,
-  rate: 6.5,
-  years: 30,
-  expenses: 600,
+  price: 2500000,
+  rent: 20000,
+  loan: 2000000,
+  rate: 7.5,
+  years: 20,
+  expenses: 10000,
 };
 
 function calculateEMI(principal: number, annualRate: number, years: number) {
@@ -75,11 +75,11 @@ function Dashboard() {
               <Building2 className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-base font-semibold leading-tight">Real Estate Investment Analyzer</h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">Smart Property Investment Insights</p>
+              <h1 className="text-base font-semibold leading-tight">EstateIQ</h1>
+              <p className="text-xs text-muted-foreground hidden sm:block">Real Estate Investment Platform</p>
             </div>
           </div>
-          <button className="w-10 h-10 rounded-full bg-secondary/60 border border-border/60 flex items-center justify-center hover:bg-secondary transition-colors">
+          <button className="w-10 h-10 rounded-full bg-secondary/60 border border-border/60 flex items-center justify-center hover:bg-secondary transition-colors" title="User profile">
             <User className="w-4 h-4" />
           </button>
         </div>
@@ -119,7 +119,7 @@ function Dashboard() {
           />
           <MetricCard
             label="Monthly Cash Flow"
-            value={`${metrics.monthlyProfit < 0 ? "-" : ""}$${Math.abs(Math.round(metrics.monthlyProfit)).toLocaleString()}`}
+            value={`${metrics.monthlyProfit < 0 ? "-" : ""}₹${Math.abs(Math.round(metrics.monthlyProfit)).toLocaleString()}`}
             icon={Wallet}
             trend={metrics.monthlyProfit >= 0 ? "up" : "down"}
             trendValue={metrics.monthlyProfit >= 0 ? "Positive flow" : "Negative flow"}
@@ -129,7 +129,7 @@ function Dashboard() {
           />
           <MetricCard
             label="Monthly EMI"
-            value={`$${Math.round(metrics.emi).toLocaleString()}`}
+            value={`₹${Math.round(metrics.emi).toLocaleString()}`}
             icon={Landmark}
             accent="warning"
             tooltip="Equated Monthly Installment — your monthly mortgage payment."
@@ -137,7 +137,7 @@ function Dashboard() {
           />
           <MetricCard
             label="Total Annual Return"
-            value={`$${Math.round(metrics.totalReturn).toLocaleString()}`}
+            value={`₹${Math.round(metrics.totalReturn).toLocaleString()}`}
             icon={LineChart}
             trend="up"
             trendValue="Incl. appreciation"

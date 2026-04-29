@@ -64,7 +64,7 @@ export function RiskAnalysis({ baseRoi, baseProfit }: Props) {
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="text-xs text-muted-foreground">Monthly</span>
-                <span className="text-lg font-semibold">${Math.round(c.profit).toLocaleString()}</span>
+                <span className="text-lg font-semibold">₹{Math.round(c.profit).toLocaleString()}</span>
               </div>
             </div>
           </div>

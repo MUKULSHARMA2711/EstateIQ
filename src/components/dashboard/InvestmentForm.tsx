@@ -2,6 +2,7 @@ import { Calculator, RotateCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -9,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getCities, getPropertyTypes } from "@/data/property-loader";
 
 export interface FormValues {
   city: string;
-  propertyType: "flat" | "house" | "land";
+  propertyType: string;
   bhk: number;
   propertyArea: number;
   price: number;
@@ -31,35 +33,33 @@ interface Props {
   loading: boolean;
 }
 
-const cities = [
-  "Mumbai",
-  "Delhi",
-  "Bangalore",
-  "Hyderabad",
-  "Pune",
-  "Chennai",
-  "Kolkata",
-  "Ahmedabad",
-  "Jaipur",
-  "Lucknow",
-  "Chandigarh",
-  "Indore",
-];
-
-const propertyTypes = ["flat", "house", "land"] as const;
-
 const bhkOptions = ["1", "2", "3", "4", "5"];
 
 const numericFields = [
-  { key: "price" as const, label: "Property Price", prefix: "$" },
-  { key: "rent" as const, label: "Monthly Rent", prefix: "$" },
-  { key: "loan" as const, label: "Loan Amount", prefix: "$" },
+  { key: "price" as const, label: "Property Price", prefix: "₹" },
+  { key: "rent" as const, label: "Monthly Rent", prefix: "₹" },
+  { key: "loan" as const, label: "Loan Amount", prefix: "₹" },
   { key: "rate" as const, label: "Interest Rate", suffix: "%" },
   { key: "years" as const, label: "Loan Duration", suffix: "yrs" },
-  { key: "expenses" as const, label: "Monthly Expenses", prefix: "$" },
+  { key: "expenses" as const, label: "Monthly Expenses", prefix: "₹" },
 ];
 
 export function InvestmentForm({ values, onChange, onCalculate, onReset, loading }: Props) {
+  const [cities, setCities] = useState<string[]>([]);
+  const [propertyTypes, setPropertyTypes] = useState<string[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const citiesData = await getCities();
+      const typesData = await getPropertyTypes();
+      setCities(citiesData);
+      setPropertyTypes(typesData);
+      setLoadingData(false);
+    };
+    loadData();
+  }, []);
+
   return (
     <div className="glass-card rounded-2xl p-6 md:p-8 animate-slide-up">
       <div className="mb-6">
@@ -76,9 +76,9 @@ export function InvestmentForm({ values, onChange, onCalculate, onReset, loading
             <Label htmlFor="city" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               City
             </Label>
-            <Select value={values.city} onValueChange={(city) => onChange({ ...values, city })}>
+            <Select value={values.city} onValueChange={(city) => onChange({ ...values, city })} disabled={loadingData}>
               <SelectTrigger id="city" className="bg-input/60 border-border/60 h-11 focus-visible:ring-primary/50">
-                <SelectValue placeholder="Select a city" />
+                <SelectValue placeholder={loadingData ? "Loading cities..." : "Select a city"} />
               </SelectTrigger>
               <SelectContent>
                 {cities.map((city) => (
@@ -95,14 +95,14 @@ export function InvestmentForm({ values, onChange, onCalculate, onReset, loading
             <Label htmlFor="propertyType" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Property Type
             </Label>
-            <Select value={values.propertyType} onValueChange={(type) => onChange({ ...values, propertyType: type as "flat" | "house" | "land" })}>
+            <Select value={values.propertyType} onValueChange={(type) => onChange({ ...values, propertyType: type })} disabled={loadingData}>
               <SelectTrigger id="propertyType" className="bg-input/60 border-border/60 h-11 focus-visible:ring-primary/50">
-                <SelectValue placeholder="Select type" />
+                <SelectValue placeholder={loadingData ? "Loading types..." : "Select type"} />
               </SelectTrigger>
               <SelectContent>
                 {propertyTypes.map((type) => (
                   <SelectItem key={type} value={type}>
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                    {type}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -110,25 +110,23 @@ export function InvestmentForm({ values, onChange, onCalculate, onReset, loading
           </div>
 
           {/* BHK */}
-          {values.propertyType !== "land" && (
-            <div className="space-y-2">
-              <Label htmlFor="bhk" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                BHK
-              </Label>
-              <Select value={values.bhk.toString()} onValueChange={(bhk) => onChange({ ...values, bhk: Number(bhk) })}>
-                <SelectTrigger id="bhk" className="bg-input/60 border-border/60 h-11 focus-visible:ring-primary/50">
-                  <SelectValue placeholder="Select BHK" />
-                </SelectTrigger>
-                <SelectContent>
-                  {bhkOptions.map((bhk) => (
-                    <SelectItem key={bhk} value={bhk}>
-                      {bhk} BHK
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="bhk" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              BHK
+            </Label>
+            <Select value={values.bhk.toString()} onValueChange={(bhk) => onChange({ ...values, bhk: Number(bhk) })}>
+              <SelectTrigger id="bhk" className="bg-input/60 border-border/60 h-11 focus-visible:ring-primary/50">
+                <SelectValue placeholder="Select BHK" />
+              </SelectTrigger>
+              <SelectContent>
+                {bhkOptions.map((bhk) => (
+                  <SelectItem key={bhk} value={bhk}>
+                    {bhk} BHK
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Property Area */}
           <div className="space-y-2">
