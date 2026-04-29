@@ -18,6 +18,10 @@ export const Route = createFileRoute("/")({
 });
 
 const defaultValues: FormValues = {
+  city: "New York",
+  propertyType: "flat",
+  bhk: 2,
+  propertyArea: 1200,
   price: 350000,
   rent: 2800,
   loan: 280000,
