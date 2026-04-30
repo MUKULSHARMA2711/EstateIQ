@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.env
+.venv/
+venv/
+ENV/
+
+# Logs
+*.log
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+
+# Node / React
+node_modules/
+frontend/build/
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# ML artifacts (keep model files versioned via Git LFS, not ignored)
+*.joblib
