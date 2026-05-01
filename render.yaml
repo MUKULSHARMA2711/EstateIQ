@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: estateiq
+    env: python
+    plan: free
+    rootDir: EstateIQ
+    buildCommand: |
+      pip install -r requirements.txt
+      cd ../frontend
+      npm ci
+      npm run build
+      cd ../EstateIQ
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn EstateIQ.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: ""
+      - key: CSRF_TRUSTED_ORIGINS
+        value: ""
